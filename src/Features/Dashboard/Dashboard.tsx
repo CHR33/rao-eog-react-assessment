@@ -1,11 +1,15 @@
 import React from 'react';
 
+import { MetricDropDown } from '../MetricDropDown';
+
 export default () => {
   return <Dashboard />;
 };
 
 const Dashboard = () => {
   return (
-    <article>Dashboard</article>
+    <article>
+      <MetricDropDown />
+    </article>
   );
 };
