@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import AutoComplete from '@material-ui/lab/Autocomplete';
+import { TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { actions } from './reducer';
 import { useQuery } from 'urql';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import Chip from '../../components/Chip';
+import { actions } from './reducer';
 import { IState } from '../../store';
 
 const useStyles = makeStyles({
   container: {
     display: 'flex',
     justifyContent: 'flex-end',
-    padding: '15px'
+    minWidth: '150px',
+    padding: '15px',
+  },
+  dropDownRoot: {
+    width: '500px',
   },
 });
 
@@ -21,7 +27,7 @@ const query = `
 `;
 
 const getMetrics = (state: IState) => {
-  return state;
+  return state.metrics
 };
 
 export default () => {
@@ -29,26 +35,51 @@ export default () => {
 };
 
 const MetricDropDown = () => {
-  const dispatch = useDispatch();
-  const metrics = useSelector(getMetrics);
-  const [result] = useQuery({ query });
   const styles = useStyles();
+  const dispatch = useDispatch();
+  const { metrics, selectedMetrics } = useSelector(getMetrics);
+  const [result] = useQuery({ query });
 
   const { fetching, data, error } = result;
-  const { metricDataRecevied, metricApiErrorReceived } = actions;
 
   useEffect(() => {
     if (error) {
-      dispatch(metricApiErrorReceived({ error: error.message }));
+      dispatch(actions.metricApiErrorReceived({ error: error.message }));
       return;
     }
 
     if (!data) return;
 
-    dispatch(metricDataRecevied(data.getMetrics));
-  }, [dispatch, data, error, metricDataRecevied, metricApiErrorReceived]);
+    dispatch(actions.metricDataRecevied(data.getMetrics));
+  }, [dispatch, data, error]);
 
-  if (fetching) return <LinearProgress />;
+  const onMetricSelection = (_: ChangeEvent<{}>, value: any) => {
+   if (value) {
+    dispatch(actions.metricSelectionUpdated(value));
+   } else {
+    dispatch(actions.metricSelectionUpdated([]));
+   }
+  }
 
-  return <h2 className={styles.container}>Dropdown</h2>;
+  return (
+    <div className={styles.container}>
+      <AutoComplete
+        classes={{
+          root: styles.dropDownRoot
+        }}
+        filterSelectedOptions
+        loading={fetching}
+        multiple
+        options={metrics}
+        renderInput={(params) => <TextField {...params} label="Metrics" variant="outlined" />}
+        renderOption={(option) => <Typography variant="body2">{option}</Typography>}
+        renderTags={(tags, getTagProps) => {
+          return tags.map((tag, index) => (
+            <Chip variant="outlined" label={tag} {...getTagProps({ index })} />
+        ))}}
+        onChange={onMetricSelection}
+        value={selectedMetrics}
+      />
+    </div>
+  );
 };

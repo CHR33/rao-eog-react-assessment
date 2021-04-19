@@ -27,7 +27,7 @@ const theme = createMuiTheme({
     background: {
       default: 'rgb(226,231,238)',
     },
-  },
+  }
 });
 
 const App = () => (

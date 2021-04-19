@@ -6,18 +6,25 @@ export type ApiErrorAction = {
   error: string;
 };
 
-const initialState: Metrics = [];
+const initialState = {
+  metrics: [] as Metrics,
+  selectedMetrics: [] as Metrics
+};
 
 const slice = createSlice({
   name: 'metrics',
   initialState,
   reducers: {
     metricDataRecevied: (state, action: PayloadAction<Metrics>) => {
-      state = [...action.payload];
+      state.metrics = [...action.payload];
+      console.log(state);
     },
     metricApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => {
       console.log('error getting metrics');
     },
+    metricSelectionUpdated: (state, action: PayloadAction<Metrics>) => {
+      state.selectedMetrics = action.payload;
+    }
   },
 });
 
