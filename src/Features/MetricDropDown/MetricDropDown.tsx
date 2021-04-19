@@ -10,14 +10,14 @@ import { IState } from '../../store';
 
 const useStyles = makeStyles({
   container: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    minWidth: '150px',
+    width: '40%',
     padding: '15px',
   },
-  dropDownRoot: {
-    width: '500px',
-  },
+  listItem: {
+    '&:hover': {
+      backgroundColor: '#bbdefb',
+    }
+  }
 });
 
 const query = `
@@ -61,17 +61,20 @@ const MetricDropDown = () => {
    }
   }
 
+  const placeholder = selectedMetrics.length > 0 ? '': 'select...';
+
   return (
     <div className={styles.container}>
       <AutoComplete
         classes={{
-          root: styles.dropDownRoot
+          option: styles.listItem,
         }}
+        debug
         filterSelectedOptions
         loading={fetching}
         multiple
         options={metrics}
-        renderInput={(params) => <TextField {...params} label="Metrics" variant="outlined" />}
+        renderInput={(params) => <TextField {...params} placeholder={placeholder} variant="outlined" />}
         renderOption={(option) => <Typography variant="body2">{option}</Typography>}
         renderTags={(tags, getTagProps) => {
           return tags.map((tag, index) => (

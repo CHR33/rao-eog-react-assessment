@@ -1,27 +1,20 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
+import { Card, CardContent, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { IState } from '../../store';
 
 const useStyles = makeStyles({
   root: {
-    margin: '20px',
-  },
-  list: {
     display: 'flex',
+    flexWrap: 'wrap',
+    margin: '20px',
+    width: '60%',
   },
-  listItem: {
-    width: 'auto'
-  },
-  listItemText: {
-    width: '150px',
-  },
-  paper: {
-    padding: '10px',
-    height: '100px',
-    width: 'auto',
+  card: {
+    marginRight: '1rem',
+    marginBottom: '1rem',
   },
 });
 
@@ -31,21 +24,16 @@ export default () => {
   const classes = useStyles();
   const selectedMetrics = useSelector(getSelectedMetrics);
 
-  if (selectedMetrics.length < 1) {
-    return null;
-  }
-
   return (
     <section className={classes.root}>
-      <List className={classes.list}>
         {selectedMetrics.map((metric) => (
-          <ListItem className={classes.listItem} key={`metric-${metric}`}>
-            <Paper className={classes.paper}>
-              <ListItemText classes={{ root: classes.listItemText }} primary={metric} />
-            </Paper>
-          </ListItem>
+          <Card className={classes.card} key={`metric-${metric}`}>
+            <CardContent>
+              <Typography variant="h6">{metric}</Typography>
+              <Typography variant="h3">{Math.random().toFixed(2)}</Typography>
+            </CardContent>
+          </Card>
         ))}
-      </List>
     </section>
   );
 };

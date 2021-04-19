@@ -7,7 +7,6 @@ import { SelectedMetricList } from '../SelectedMetricList';
 const useStyles = makeStyles({
   container: {
     display: 'flex',
-    flexDirection: 'column'
   },
 });
 
@@ -20,8 +19,8 @@ const Dashboard = () => {
 
   return (
     <article className={styles.container}>
-      <MetricDropDown />
       <SelectedMetricList />
+      <MetricDropDown />
     </article>
   );
 };
