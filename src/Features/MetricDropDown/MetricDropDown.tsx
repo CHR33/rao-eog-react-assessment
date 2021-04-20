@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     '&:hover': {
       backgroundColor: '#bbdefb',
     }
-  }
+  },
 });
 
 const query = `
@@ -38,13 +38,13 @@ const MetricDropDown = () => {
   const styles = useStyles();
   const dispatch = useDispatch();
   const { metrics, selectedMetrics } = useSelector(getMetrics);
-  const [result] = useQuery({ query });
+  const [result] = useQuery({ query, });
 
   const { fetching, data, error } = result;
 
   useEffect(() => {
     if (error) {
-      dispatch(actions.metricApiErrorReceived({ error: error.message }));
+      dispatch(actions.metricApiErrorReceived({ error: error.message, }));
       return;
     }
 

@@ -3,10 +3,15 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { MetricDropDown } from '../MetricDropDown';
 import { SelectedMetricList } from '../SelectedMetricList';
+import { MetricChart } from '../MetricChart';
 
 const useStyles = makeStyles({
   container: {
     display: 'flex',
+    flexDirection: 'column'
+  },
+  metrics: {
+    display: 'flex'
   },
 });
 
@@ -19,8 +24,11 @@ const Dashboard = () => {
 
   return (
     <article className={styles.container}>
-      <SelectedMetricList />
-      <MetricDropDown />
+      <div className={styles.metrics}>
+        <SelectedMetricList />
+        <MetricDropDown />
+      </div>
+      <MetricChart />
     </article>
   );
 };

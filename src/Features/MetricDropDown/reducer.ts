@@ -17,7 +17,6 @@ const slice = createSlice({
   reducers: {
     metricDataRecevied: (state, action: PayloadAction<Metrics>) => {
       state.metrics = [...action.payload];
-      console.log(state);
     },
     metricApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => {
       console.log('error getting metrics');
