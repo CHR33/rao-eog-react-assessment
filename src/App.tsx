@@ -11,7 +11,7 @@ import Header from './components/Header';
 import Wrapper from './components/Wrapper';
 import Dashboard from './Features/Dashboard/Dashboard';
 
-const subscriptionClient = new SubscriptionClient('ws://react.eogresources.com/graphql', { reconnect: true});
+const subscriptionClient = new SubscriptionClient('wss://react.eogresources.com/graphql', { reconnect: true});
 
 const client = createClient({
   url: "https://react.eogresources.com/graphql",

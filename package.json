@@ -1,6 +1,7 @@
 {
   "name": "eog-react-visualization-base",
   "version": "2.0.0",
+  "homepage": "https://CHR33.github.io/rao-eog-react-assessment",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.10",
@@ -9,6 +10,7 @@
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.3",
     "@types/react-redux": "^7.1.5",
+    "gh-pages": "^3.1.0",
     "graphql": "^14.5.8",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.29.1",
@@ -31,7 +33,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
