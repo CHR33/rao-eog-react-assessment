@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   listItem: {
     '&:hover': {
       backgroundColor: '#bbdefb',
-    }
+    },
   },
 });
 
@@ -26,25 +26,21 @@ const query = `
   }
 `;
 
-const getMetrics = (state: IState) => {
-  return state.metrics
-};
+const getMetrics = (state: IState) => state.metrics;
 
-export default () => {
-  return <MetricDropDown />;
-};
+export default () => <MetricDropDown />;
 
 const MetricDropDown = () => {
   const styles = useStyles();
   const dispatch = useDispatch();
   const { metrics, selectedMetrics } = useSelector(getMetrics);
-  const [result] = useQuery({ query, });
+  const [result] = useQuery({ query });
 
   const { fetching, data, error } = result;
 
   useEffect(() => {
     if (error) {
-      dispatch(actions.metricApiErrorReceived({ error: error.message, }));
+      dispatch(actions.metricApiErrorReceived({ error: error.message }));
       return;
     }
 
@@ -54,14 +50,14 @@ const MetricDropDown = () => {
   }, [dispatch, data, error]);
 
   const onMetricSelection = (_: ChangeEvent<{}>, value: any) => {
-   if (value) {
-    dispatch(actions.metricSelectionUpdated(value));
-   } else {
-    dispatch(actions.metricSelectionUpdated([]));
-   }
-  }
+    if (value) {
+      dispatch(actions.metricSelectionUpdated(value));
+    } else {
+      dispatch(actions.metricSelectionUpdated([]));
+    }
+  };
 
-  const placeholder = selectedMetrics.length > 0 ? '': 'select...';
+  const placeholder = selectedMetrics.length > 0 ? '' : 'select...';
 
   return (
     <div className={styles.container}>
@@ -74,12 +70,11 @@ const MetricDropDown = () => {
         loading={fetching}
         multiple
         options={metrics}
-        renderInput={(params) => <TextField {...params} placeholder={placeholder} variant="outlined" />}
-        renderOption={(option) => <Typography variant="body2">{option}</Typography>}
-        renderTags={(tags, getTagProps) => {
-          return tags.map((tag, index) => (
-            <Chip variant="outlined" label={tag} {...getTagProps({ index })} />
-        ))}}
+        renderInput={params => <TextField {...params} placeholder={placeholder} variant="outlined" />}
+        renderOption={option => <Typography variant="body2">{option}</Typography>}
+        renderTags={(tags, getTagProps) =>
+          tags.map((tag, index) => <Chip variant="outlined" label={tag} {...getTagProps({ index })} />)
+        }
         onChange={onMetricSelection}
         value={selectedMetrics}
       />

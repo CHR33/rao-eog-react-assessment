@@ -5,5 +5,5 @@ import { reducer as measurementsReducer } from '../Features/MetricChart/reducer'
 export default {
   weather: weatherReducer,
   metrics: metricsReducer,
-  measurements: measurementsReducer
+  measurements: measurementsReducer,
 };

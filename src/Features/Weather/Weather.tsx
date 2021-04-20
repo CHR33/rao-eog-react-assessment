@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { actions } from './reducer';
 import { useQuery } from 'urql';
 import { useGeolocation } from 'react-use';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { actions } from './reducer';
 import Chip from '../../components/Chip';
 import { IState } from '../../store';
 
@@ -26,9 +26,7 @@ const getWeather = (state: IState) => {
   };
 };
 
-export default () => {
-  return <Weather />;
-};
+export default () => <Weather />;
 
 const Weather = () => {
   const getLocation = useGeolocation();

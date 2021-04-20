@@ -8,7 +8,7 @@ export type ApiErrorAction = {
 
 const initialState = {
   metrics: [] as Metrics,
-  selectedMetrics: [] as Metrics
+  selectedMetrics: [] as Metrics,
 };
 
 const slice = createSlice({
@@ -23,9 +23,9 @@ const slice = createSlice({
     },
     metricSelectionUpdated: (state, action: PayloadAction<Metrics>) => {
       state.selectedMetrics = action.payload;
-    }
+    },
   },
 });
 
-export const reducer = slice.reducer;
-export const actions = slice.actions;
+export const { reducer } = slice;
+export const { actions } = slice;

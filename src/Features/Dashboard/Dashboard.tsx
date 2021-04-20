@@ -8,16 +8,14 @@ import { MetricChart } from '../MetricChart';
 const useStyles = makeStyles({
   container: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   metrics: {
-    display: 'flex'
+    display: 'flex',
   },
 });
 
-export default () => {
-  return <Dashboard />;
-};
+export default () => <Dashboard />;
 
 const Dashboard = () => {
   const styles = useStyles();

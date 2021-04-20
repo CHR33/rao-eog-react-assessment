@@ -1,6 +1,6 @@
 import { Measurement } from './measurement';
 
 export interface MeasurementItem {
-	metric: string;
-	measurements: Measurement[]
+  metric: string;
+  measurements: Measurement[];
 }

@@ -22,7 +22,7 @@ const slice = createSlice({
     newMeasurementDataReceived: (state, action: PayloadAction<NewMeasurement>) => {
       const { newMeasurement } = action.payload;
       const measurements = state.measurements.slice();
-      measurements.forEach((measurement) => {
+      measurements.forEach(measurement => {
         if (measurement.metric === newMeasurement.metric) {
           measurement.measurements.push(newMeasurement);
           measurements.shift();
@@ -32,5 +32,5 @@ const slice = createSlice({
   },
 });
 
-export const reducer = slice.reducer;
-export const actions = slice.actions;
+export const { reducer } = slice;
+export const { actions } = slice;

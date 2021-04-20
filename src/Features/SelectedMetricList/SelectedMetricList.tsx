@@ -28,14 +28,14 @@ export default () => {
   const measurements = useSelector(getMeasurements);
 
   const latestValues = React.useMemo(() => {
-    const list = [] as { name: string, value: number }[] ;
-    measurements.forEach((measurement) => {
-      selectedMetrics.forEach((metricName) => {
+    const list = [] as { name: string; value: number }[];
+    measurements.forEach(measurement => {
+      selectedMetrics.forEach(metricName => {
         if (measurement.metric === metricName) {
           const [latestValue] = measurement.measurements.slice(-1);
           list.push({
             name: metricName,
-            value: latestValue.value
+            value: latestValue.value,
           });
         }
       });
@@ -45,14 +45,14 @@ export default () => {
 
   return (
     <section className={classes.root}>
-        {latestValues.map(({ name, value }) => (
-          <Card className={classes.card} key={`metric-${name}`}>
-            <CardContent>
-              <Typography variant="h6">{name}</Typography>
-              <Typography variant="h3">{value}</Typography>
-            </CardContent>
-          </Card>
-        ))}
+      {latestValues.map(({ name, value }) => (
+        <Card className={classes.card} key={`metric-${name}`}>
+          <CardContent>
+            <Typography variant="h6">{name}</Typography>
+            <Typography variant="h3">{value}</Typography>
+          </CardContent>
+        </Card>
+      ))}
     </section>
   );
 };
