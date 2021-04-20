@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/rao-eog-react-assessment/precache-manifest.579d96e04cc60074d4d6d7a3e545aa95.js"
+  "/rao-eog-react-assessment/precache-manifest.aaa7fff9d75f06c89fad5f5fabb1d7d1.js"
 );
 
 self.addEventListener('message', (event) => {
