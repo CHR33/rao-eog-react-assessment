@@ -15,7 +15,7 @@ const MetricChart = () => {
   const hasPSIData = selectedMetrics.some(item => ['tubingPressure', 'casingPressure'].includes(item));
   const hasInjData = selectedMetrics.some(item => ['injValveOpen'].includes(item));
 
-  if (chartData.length === 0) {
+  if (selectedMetrics.length === 0) {
     return null;
   }
 
