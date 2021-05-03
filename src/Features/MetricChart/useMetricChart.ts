@@ -18,18 +18,7 @@ const getQuery = (alias: string) => (`
 			}
 		}
 	}
-`;
-
-const metricSubscriptionQuery = `
-  subscription {
-    newMeasurement{
-      metric
-      at
-      value
-      unit
-    }
-  }
-`;
+`);
 
 const getSelectedMetrics = (state: IState) => state.metrics;
 

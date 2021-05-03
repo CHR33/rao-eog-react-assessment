@@ -1,8 +1,11 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useSubscription } from 'urql';
 import { Card, CardContent, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { actions } from '../MetricChart/reducer';
+import { NewMeasurement } from '../../models';
 import { IState } from '../../store';
 
 const useStyles = makeStyles({
@@ -19,37 +22,57 @@ const useStyles = makeStyles({
   },
 });
 
-const getSelectedMetrics = (state: IState) => state.metrics.selectedMetrics;
-const getMeasurements = (state: IState) => state.measurements.measurements;
+
+const metricSubscriptionQuery = `
+  subscription {
+    newMeasurement{
+      metric
+      at
+      value
+      unit
+    }
+  }
+`;
+
+const getSelectedMetricNames = (state: IState) => state.metrics.selectedMetrics;
 
 export default () => {
   const classes = useStyles();
-  const selectedMetrics = useSelector(getSelectedMetrics);
-  const measurements = useSelector(getMeasurements);
+  const selectedMetrics = useSelector(getSelectedMetricNames);
+  const dispatch = useDispatch();
+  const [recentMetricValueMap, setRecentMetricValuesMap] = React.useState<{[x: string]: number}>({});
 
-  const latestValues = React.useMemo(() => {
-    const list = [] as { name: string; value: number }[];
-    measurements.forEach(measurement => {
-      selectedMetrics.forEach(metricName => {
-        if (measurement.metric === metricName) {
-          const [latestValue] = measurement.measurements.slice(-1);
-          list.push({
-            name: metricName,
-            value: latestValue.value,
-          });
-        }
-      });
-    });
-    return list;
-  }, [measurements, selectedMetrics]);
+  const [subscriptionResult] = useSubscription<NewMeasurement>({
+    query: metricSubscriptionQuery,
+    variables: {},
+  });
+
+  React.useEffect(() => {
+    const { data } = subscriptionResult;
+    if (data) {
+      const { metric, value } = data.newMeasurement;
+      if (selectedMetrics.includes(metric)) {
+        setRecentMetricValuesMap((previousState) => ({
+          ...previousState,
+          [metric]: value
+        }));
+      } else {
+        setRecentMetricValuesMap((previousState) => {
+          const { [metric]: omit, ...remainingMap } = previousState;
+          return remainingMap;
+        });
+      }
+      dispatch(actions.latestMeasurementDataReceived(data))
+    }
+  }, [subscriptionResult, selectedMetrics]);
 
   return (
     <section className={classes.root}>
-      {latestValues.map(({ name, value }) => (
-        <Card className={classes.card} key={`metric-${name}`}>
+      {Object.keys(recentMetricValueMap).map((metric) => (
+        <Card className={classes.card} key={`metric-${metric}`}>
           <CardContent>
-            <Typography variant="h6">{name}</Typography>
-            <Typography variant="h3">{value}</Typography>
+            <Typography variant="h6">{metric}</Typography>
+            <Typography variant="h3">{recentMetricValueMap[metric]}</Typography>
           </CardContent>
         </Card>
       ))}
