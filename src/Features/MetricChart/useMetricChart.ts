@@ -75,7 +75,7 @@ export const useMetricChart = () => {
         measurements: []
       }));
     }
-  }, [recentlyDeletedMetric]);
+  }, [dispatch, recentlyDeletedMetric]);
 
   return {
     chartData,

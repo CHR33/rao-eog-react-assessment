@@ -64,7 +64,7 @@ export default () => {
       }
       dispatch(actions.latestMeasurementDataReceived(data))
     }
-  }, [subscriptionResult, selectedMetrics]);
+  }, [dispatch, subscriptionResult, selectedMetrics]);
 
   return (
     <section className={classes.root}>
