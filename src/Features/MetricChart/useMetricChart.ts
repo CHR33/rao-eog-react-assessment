@@ -1,19 +1,19 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useQuery, useSubscription } from 'urql';
+import { useQuery } from 'urql';
 import { IState } from '../../store';
-import { Measurement, NewMeasurement, MultipleMeasurements } from '../../models';
+import { Measurement, MultipleMeasurements } from '../../models';
 
 import { actions } from './reducer';
 
-const query = `
+const getQuery = (alias: string) => (`
 	query($measurementQuery: [MeasurementQuery]) {
 		getMultipleMeasurements(input: $measurementQuery) {
 			metric,
 			measurements {
 				at,
 				metric,
-				value,
+				${alias}: value,
 				unit
 			}
 		}
@@ -33,51 +33,40 @@ const metricSubscriptionQuery = `
 
 const getSelectedMetrics = (state: IState) => state.metrics;
 
-const getMeasurements = (state: IState) => [...state.measurements.measurements];
+const getMeasurements = (state: IState) => state.measurements.measurementDataMap;
 
 const currentTime = new Date().valueOf();
 const thirtyMinutes = 90 * 60 * 1000;
 const after = currentTime - thirtyMinutes;
 
 export const useMetricChart = () => {
-  const measurements = useSelector(getMeasurements);
-  const { selectedMetrics } = useSelector(getSelectedMetrics);
+  const measurementDataMap = useSelector(getMeasurements);
+  const {
+    selectedMetrics,
+    recentlySelectedMetric,
+    recentlyDeletedMetric
+  } = useSelector(getSelectedMetrics);
   const dispatch = useDispatch();
 
-  const [subscriptionResult] = useSubscription<NewMeasurement>({
-    query: metricSubscriptionQuery,
-    variables: {},
-  });
+  const chartData = React.useMemo(() => {
+    return Object.keys(measurementDataMap).reduce((result, key) => {
+      return result.concat(measurementDataMap[key]);
+    }, [] as Measurement[]);
+  }, [measurementDataMap]);
 
   const measurementQuery = React.useMemo(
-    () =>
-      selectedMetrics.map(metricName => ({
-        metricName,
-        after,
-      })),
-    [selectedMetrics],
-  );
-
-  const chartData = React.useMemo(() => {
-    const newChartData: Measurement[][] = [];
-
-    measurements.forEach(item => newChartData.push(item.measurements));
-
-    const mappedData = newChartData.flat().map(item => {
-      const newValue = { ...item };
-      newValue[newValue.metric] = newValue.value;
-      return newValue;
-    });
-
-    return mappedData;
-  }, [measurements]);
+    () => {
+    if (recentlySelectedMetric) {
+      return  [{ metricName: recentlySelectedMetric, after, }];
+    }
+  }, [recentlySelectedMetric]);
 
   const [result, executeQuery] = useQuery<{ getMultipleMeasurements: MultipleMeasurements[] }>({
-    query,
+    query: getQuery(recentlySelectedMetric),
     variables: {
       measurementQuery,
     },
-    pause: measurementQuery.length === 0,
+    pause: !measurementQuery,
   });
 
   const { data } = result;
@@ -87,14 +76,17 @@ export const useMetricChart = () => {
 
     const { getMultipleMeasurements } = data;
 
-    dispatch(actions.measurementsDataRecevied(getMultipleMeasurements));
+    dispatch(actions.measurementsDataRecevied(getMultipleMeasurements[0]));
   }, [data, dispatch, executeQuery]);
 
   React.useEffect(() => {
-    if (subscriptionResult.data) {
-      dispatch(actions.newMeasurementDataReceived(subscriptionResult.data));
+    if (recentlyDeletedMetric) {
+      dispatch(actions.measurementsDataRecevied({
+        metric: recentlyDeletedMetric,
+        measurements: []
+      }));
     }
-  }, [dispatch, subscriptionResult]);
+  }, [recentlyDeletedMetric]);
 
   return {
     chartData,

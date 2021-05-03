@@ -8,6 +8,8 @@ export type ApiErrorAction = {
 
 const initialState = {
   metrics: [] as Metrics,
+  recentlyDeletedMetric: '',
+  recentlySelectedMetric: '',
   selectedMetrics: [] as Metrics,
 };
 
@@ -22,7 +24,17 @@ const slice = createSlice({
       console.log('error getting metrics');
     },
     metricSelectionUpdated: (state, action: PayloadAction<Metrics>) => {
+      const [seletedMetric] = action.payload.filter(m => !state.selectedMetrics.includes(m))
+      const [deletedMetric] = state.selectedMetrics.filter(m => !action.payload.includes(m))
       state.selectedMetrics = action.payload;
+
+      if (deletedMetric) {
+        state.recentlyDeletedMetric = deletedMetric;
+      }
+
+      if (seletedMetric) {
+        state.recentlySelectedMetric = seletedMetric;
+      }
     },
   },
 });
